@@ -2,5 +2,9 @@
 name = "mescal"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+authors = ["Grisha Krugov <grigory@kruglov.ca>"]
+description = "A simple library for decoding bencode"
+keywords = ["bencode", "bittorrent", "torrent"]
 
 [dependencies]
