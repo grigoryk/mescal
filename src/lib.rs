@@ -68,7 +68,7 @@ impl fmt::Display for BencodeItem {
                 if let Ok(s) = String::try_from(s) {
                     write!(f, "\"{}\"", s)
                 } else {
-                    write!(f, "Bytes")
+                    write!(f, "Bytes(len={})", s.bytes.len())
                 }
             },
             BencodeItem::Int(i) => write!(f, "{}", i),
@@ -238,11 +238,6 @@ fn read_string(bytes_iter: &mut Peekable<Iter<u8>>) -> Result<ByteString, Bencod
     while i < str_len {
         if let Some(b) = bytes_iter.next() {
             str_buff.push(*b);
-            // if *b >= 0x20 && *b <= 0x7E {
-            //     str_buff.push(*b);
-            // } else {
-            //     return Err(BencodeError::StrNotAscii)
-            // }
         } else {
             return Err(BencodeError::BytestreamEnded);
         }
