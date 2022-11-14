@@ -20,23 +20,12 @@ pub enum BencodeError {
 
 #[derive(Debug, PartialEq)]
 pub struct ByteString {
-    bytes: Vec<u8>
+    pub bytes: Vec<u8>
 }
 
 impl ByteString {
     pub fn new(bytes: Vec<u8>) -> Self {
         ByteString { bytes: bytes }
-    }
-}
-
-impl TryFrom<&ByteString> for String {
-    type Error = ();
-
-    fn try_from(value: &ByteString) -> Result<Self, Self::Error> {
-        match from_utf8(&value.bytes) {
-            Ok(s) => Ok(String::from(s)),
-            Err(_) => Err(())
-        }
     }
 }
 

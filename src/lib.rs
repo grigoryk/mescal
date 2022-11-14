@@ -8,6 +8,7 @@ pub use types::ByteString;
 mod c;
 mod types;
 mod decoder;
+mod encoder;
 
 pub fn open<P>(path: P) -> Result<BencodeItem, BencodeError> where P: AsRef<Path> + std::fmt::Display {
     let res = &fs::read(&path);

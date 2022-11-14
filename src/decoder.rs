@@ -2,7 +2,7 @@ use core::slice::Iter;
 use std::iter::Peekable;
 use std::str::from_utf8;
 
-use crate::types::{BencodeItem, BencodeError, ByteString};
+use crate::{BencodeItem, BencodeError, ByteString};
 use crate::c;
 
 pub fn parse_bytes(bytes_iter: &mut Peekable<Iter<u8>>) -> Result<BencodeItem, BencodeError> {
@@ -110,6 +110,17 @@ fn ascii_bytes_to_int(bytes: &Vec<u8>) -> Result<i64, BencodeError> {
             Err(e) => Err(BencodeError::IntParseInt(format!("{}", e))),
         },
         Err(e) => Err(BencodeError::IntParseAscii(e))
+    }
+}
+
+impl TryFrom<&ByteString> for String {
+    type Error = ();
+
+    fn try_from(value: &ByteString) -> Result<Self, Self::Error> {
+        match from_utf8(&value.bytes) {
+            Ok(s) => Ok(String::from(s)),
+            Err(_) => Err(())
+        }
     }
 }
 
