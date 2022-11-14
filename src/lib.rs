@@ -4,6 +4,7 @@ use std::path::Path;
 pub use types::BencodeError;
 pub use types::BencodeItem;
 pub use types::ByteString;
+pub use encoder::AsBencodeBytes;
 
 mod c;
 mod types;

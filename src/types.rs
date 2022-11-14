@@ -1,6 +1,5 @@
 use std::fmt;
 use std::str::Utf8Error;
-use std::str::from_utf8;
 
 #[derive(Debug, PartialEq)]
 pub enum BencodeError {

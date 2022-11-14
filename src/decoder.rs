@@ -191,7 +191,7 @@ mod tests {
     }
 
     #[test]
-    fn read_dict() {
+    fn dict() {
         assert_bytes_eq!(vec!(0x64, 0x65), BencodeItem::Dict(vec!()));
 
         assert_bytes_eq!(
@@ -213,7 +213,7 @@ mod tests {
     }
 
     #[test]
-    fn read_list() {
+    fn list() {
         assert_bytes_eq!(vec!(0x6C, 0x65), BencodeItem::List(vec!()));
         assert_bytes_eq!(
             vec!(0x6C, 0x6C, 0x65, 0x65),
@@ -239,7 +239,7 @@ mod tests {
     }
 
     #[test]
-    fn read_string() {
+    fn string() {
         assert_bytes_eq!(vec!(0x35, 0x3A, 0x48, 0x65, 0x6C, 0x6C, 0x6F), BencodeItem::String(bencode_string!("Hello")));
         assert_bytes_eq!(vec!(0x31, 0x31, 0x3A, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64), BencodeItem::String(bencode_string!("Hello World")));
         assert_bytes_eq!(vec!(0x30, 0x3A), BencodeItem::String(bencode_string!("")));
@@ -250,7 +250,7 @@ mod tests {
     }
 
     #[test]
-    fn read_int() {
+    fn int() {
         assert_bytes_eq!(vec!(0x69, 0x31, 0x33, 0x33, 0x37, 0x65), BencodeItem::Int(1337));
         assert_bytes_eq!(vec!(0x69, 0x37, 0x65), BencodeItem::Int(7));
         assert_bytes_eq!(vec!(0x69, 0x31, 0x36, 0x36, 0x33, 0x30, 0x32, 0x34, 0x32, 0x39, 0x33, 0x65), BencodeItem::Int(1663024293));
