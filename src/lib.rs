@@ -1,7 +1,6 @@
 use std::fmt;
 use std::fs;
 use core::slice::Iter;
-use std::collections::HashMap;
 use std::iter::Peekable;
 use std::path::Path;
 use std::str::Utf8Error;
@@ -58,7 +57,7 @@ pub enum BencodeItem {
     String(ByteString),
     Int(i64),
     List(Vec<BencodeItem>),
-    Dict(HashMap<String, BencodeItem>)
+    Dict(Vec<(String, BencodeItem)>)
 }
 
 impl fmt::Display for BencodeItem {
@@ -116,17 +115,17 @@ pub fn parse_bytes(bytes_iter: &mut Peekable<Iter<u8>>) -> Result<BencodeItem, B
     }
 }
 
-fn read_dict(bytes_iter: &mut Peekable<Iter<u8>>) -> Result<HashMap<String, BencodeItem>, BencodeError> {
+fn read_dict(bytes_iter: &mut Peekable<Iter<u8>>) -> Result<Vec<(String, BencodeItem)>, BencodeError> {
     // consume 'd'
     bytes_iter.next();
-    let mut res: HashMap<String, BencodeItem> = HashMap::new();
+    let mut res: Vec<(String, BencodeItem)> = vec!();
     // empty dict
     if let Some(&&M_END) = bytes_iter.peek() {
-        return Ok(HashMap::new())
+        return Ok(res)
     }
     loop {
         if let Ok(key) = String::try_from(&read_string(bytes_iter)?) {
-            res.insert(key, parse_bytes(bytes_iter)?);
+            res.push((key, parse_bytes(bytes_iter)?));
         } else {
             return Err(BencodeError::DictKeyParse)
         }
@@ -276,19 +275,22 @@ mod tests {
 
     #[test]
     fn read_dict() {
-        assert_bytes_eq!(vec!(0x64, 0x65), BencodeItem::Dict(HashMap::new()));
+        assert_bytes_eq!(vec!(0x64, 0x65), BencodeItem::Dict(vec!()));
 
         assert_bytes_eq!(
-            vec!(0x64, 0x35, 0x3A, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x35, 0x3A, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0x65),
+            vec!(0x64, 0x35, 0x3A, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x35, 0x3A, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0x35, 0x3A, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0x35, 0x3A, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x65),
             BencodeItem::Dict(
-                HashMap::from([(String::from("Hello"), BencodeItem::String(bencode_string!("World")))])
+                vec!(
+                    (String::from("Hello"), BencodeItem::String(bencode_string!("World"))),
+                    (String::from("World"), BencodeItem::String(bencode_string!("Hello")))
+                )
             )
         );
 
         assert_bytes_eq!(
             vec!(0x64, 0x35, 0x3A, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x69, 0x31, 0x32, 0x33, 0x65, 0x65),
             BencodeItem::Dict(
-                HashMap::from([(String::from("Hello"), BencodeItem::Int(123))])
+                vec!((String::from("Hello"), BencodeItem::Int(123)))
             )
         );
     }
