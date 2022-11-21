@@ -5,6 +5,7 @@ pub use types::BencodeError;
 pub use types::BencodeItem;
 pub use types::ByteString;
 pub use encoder::AsBencodeBytes;
+pub use decoder::parse_bytes;
 
 mod c;
 mod types;
